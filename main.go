@@ -29,12 +29,12 @@ func main() {
 		db.Flush()
 	}
 
-	// cleanup := func() {
-	// 	db := pool.Get()
-	// 	defer db.Close()
-	// 	log.Println("cleanup")
-	// 	db.Do("FLUSHDB")
-	// }
+	cleanup := func() {
+		db := pool.Get()
+		defer db.Close()
+		log.Println("cleanup")
+		db.Do("FLUSHDB")
+	}
 
 	run := func(actions []func() error) {
 		wg := &sync.WaitGroup{}
@@ -70,6 +70,7 @@ func main() {
 		}
 		run(actions)
 		validate()
+		cleanup()
 		log.Println("Done")
 	}
 }
